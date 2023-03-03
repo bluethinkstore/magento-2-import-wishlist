@@ -7,56 +7,57 @@ declare(strict_types=1);
 namespace Bluethinkinc\ImportWishlist\Controller\Adminhtml\Index;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Response\Http\FileFactory;
-use Magento\Framework\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem\DriverInterface;
-use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Filesystem;
+use Magento\Framework\App\Filesystem\DirectoryList as APPDIRECTORYLIST;
+use Magento\Backend\App\Action;
 
-class Index extends \Magento\Backend\App\Action
+/**
+ * Used for download csv
+ */
+class Index extends Action
 {
     /**
-     * @var \Magento\Framework\View\Result\PageFactory
+     * This is a folder name constants
      */
-    protected $resultPageFactory;
+    private const FOLDER_NAME = "downloadsamplecsv";
+
+    /**
+     * This is a file name cosntants
+     *
+     */
+    private const FILE_NAME = "import_wishlist_sample.csv";
 
     /**
      * @var FileFactory
      */
-    protected $downloader;
+    private $downloader;
 
     /**
-     * @var DirectoryList
+     * @var Filesystem
      */
-    protected $directory;
+    private $filesystem;
 
     /**
-     * @var DriverInterface
+     * @var APPDIRECTORYLIST
      */
-    protected $driverInterface;
+    private $appredirectlist;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      * @param FileFactory $fileFactory
-     * @param DirectoryList $directory
-     * @param DriverInterface $driverInterface
-     * @param File $fileDriver
+     * @param Filesystem $filesystem
      */
     public function __construct(
         Context $context,
-        PageFactory $resultPageFactory,
         FileFactory $fileFactory,
-        DirectoryList $directory,
-        DriverInterface $driverInterface,
-        File $fileDriver
+        Filesystem $filesystem
     ) {
         parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
         $this->downloader = $fileFactory;
-        $this->directory = $directory;
-        $this->driverInterface = $driverInterface;
-        $this->fileDriver = $fileDriver;
+        $this->mediaDirectory = $filesystem->getDirectoryWrite(
+            APPDIRECTORYLIST::MEDIA
+        );
     }
 
     /**
@@ -66,44 +67,32 @@ class Index extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        $resultRedirect = $this->resultRedirectFactory->create();
         if (isset($this->getRequest()->getParams()["download_sample"])) {
-            $heading = ["email", "sku"];
-
-            $filename = "wishlist_importer_sample.csv";
-            $handle = $this->driverInterface->fileOpen($filename, "w");
-            $this->driverInterface->filePutCsv($handle, $heading);
-
+            $filepath = self::FOLDER_NAME . "/" . self::FILE_NAME;
+            $filename = self::FILE_NAME;
+            $this->mediaDirectory->create(self::FOLDER_NAME);
+            $stream = $this->mediaDirectory->openFile($filepath, "w+");
+            $stream->lock();
+            $header = ["email", "sku"];
+            $stream->writeCsv($header);
             $data = $this->getSampleData();
-            foreach ($data as $d) {
-                $this->driverInterface->filePutCsv($handle, $d);
+            foreach ($data as $csvdata) {
+                $data = [];
+                $data[] = $csvdata["0"];
+                $data[] = $csvdata["1"];
+                $stream->writeCsv($data);
             }
-
-            $this->downloadCsv($filename);
-        }
-
-        return $resultPage = $this->resultPageFactory->create();
-    }
-
-    /**
-     * Download Csv file
-     *
-     * @param array $filename
-     * @return \Magento\Framework\App\ResponseInterface|void
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    public function downloadCsv($filename)
-    {
-        if ($this->fileDriver->isExists($filename)) {
-            $filePath =
-                $this->directory->getPath("pub") .
-                DIRECTORY_SEPARATOR .
-                $filename;
-
-            return $this->downloader->create(
+            $content["type"] = "filename";
+            $content["value"] = $filepath;
+            $this->downloader->create(
                 $filename,
-                $this->driverInterface->fileGetContents($filePath)
+                $content,
+                APPDIRECTORYLIST::MEDIA
             );
         }
+
+        return $resultRedirect->setPath("csvdata/index/importcsv");
     }
 
     /**
@@ -111,14 +100,13 @@ class Index extends \Magento\Backend\App\Action
      *
      * @return string[][]
      */
-    public function getSampleData()
+    private function getSampleData()
     {
-        $data = [
+        return [
             [
-                'roni_cost@example.com',
-                '24-WB02,24-WB03,24-WB07,24-WB04,24-UG04'
+                "roni_cost@example.com",
+                "24-WB02,24-WB03,24-WB07,24-WB04,24-UG04",
             ],
         ];
-        return $data;
     }
 }

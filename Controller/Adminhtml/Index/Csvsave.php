@@ -143,7 +143,7 @@ class Csvsave extends \Magento\Backend\App\Action
         $this->resultPageFactory = $resultPageFactory;
         $this->uploaderFactory = $uploaderFactory;
         $this->varDirectory = $filesystem->getDirectoryWrite(
-            DirectoryList::VAR_DIR
+            DirectoryList::MEDIA
         );
         $this->csvProcessor = $csvProcessor;
         $this->storeID = $storeManager->getStore()->getId();
@@ -213,7 +213,7 @@ class Csvsave extends \Magento\Backend\App\Action
      */
     public function getWorkingDir()
     {
-        return $this->varDirectory->getAbsolutePath("importexportwishlist/");
+        return $this->varDirectory->getAbsolutePath("importwishlistcsv/");
     }
 
     /**

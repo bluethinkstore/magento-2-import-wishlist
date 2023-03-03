@@ -28,8 +28,6 @@ class Delete extends \Bluethinkinc\ImportWishlist\Controller\Adminhtml\Block imp
                     \Magento\Wishlist\Model\Item::class
                 );
                  $model->load($id);
-                // print_r(get_class_methods($data));die;
-                // print_R($data->getData());die;
                 $model->delete();
                 // display success message
                 $this->messageManager->addSuccessMessage(
