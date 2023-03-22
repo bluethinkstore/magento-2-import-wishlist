@@ -10,6 +10,8 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 /**
  * Class Collection
@@ -28,7 +30,8 @@ class Collection extends GridCollection implements SearchResultInterface
      * @param String $mainTable
      * @param String $resourceModel
      * @param Magento\Framework\View\Element\UiComponent\DataProvider\Document $model
-     * @param string $connection
+     * @param AdapterInterface $connection
+     * @param AbstractDb $resource
      */
     public function __construct(
         EntityFactoryInterface $entityFactory,
@@ -39,9 +42,9 @@ class Collection extends GridCollection implements SearchResultInterface
         $mainTable,
         $resourceModel,
         $model = \Magento\Framework\View\Element\UiComponent\DataProvider\Document::class,
-        $connection = null
+        AdapterInterface $connection = null,
+        AbstractDb $resource = null
     ) {
-        //AbstractDb $resource = null
 
         parent::__construct(
             $entityFactory,
@@ -49,8 +52,8 @@ class Collection extends GridCollection implements SearchResultInterface
             $fetchStrategy,
             $eventManager,
             $storeManager,
-            $connection
-            //$resource
+            $connection,
+            $resource
         );
         $this->_init($model, $resourceModel);
         $this->setMainTable($mainTable);

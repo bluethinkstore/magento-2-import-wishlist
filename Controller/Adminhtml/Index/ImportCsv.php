@@ -17,6 +17,18 @@ class ImportCsv extends \Magento\Backend\App\Action
      * @param Context $context
      * @param PageFactory $pageFactory
      */
+
+    /**
+     * Page return
+     *
+     * @var PageFactory
+     */
+    protected $_pageFactory;
+
+    /**
+     * @param \Magento\Backend\App\Action\Context $context
+     * @param PageFactory $pageFactory
+     */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $pageFactory

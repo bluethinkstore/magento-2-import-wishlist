@@ -34,6 +34,11 @@ class Index extends Action
     private $downloader;
 
     /**
+     * @var MEDIA
+     */
+    private $mediaDirectory;
+
+    /**
      * @var Filesystem
      */
     private $filesystem;

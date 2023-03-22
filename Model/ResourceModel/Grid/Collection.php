@@ -18,6 +18,11 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     protected $_idFieldName = "wishlist_item_id";
 
     /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
      * Construct
      *
      * @param EntityFactoryInterface $entityFactory
