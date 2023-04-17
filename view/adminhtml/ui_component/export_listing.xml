@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">export_listing.export_listing_data_source</item>
@@ -38,7 +39,9 @@
             <updateUrl path="mui/index/render"/>
         </settings>
         <aclResource>Bluethinkinc_ImportWishlist::export</aclResource>
-        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="export_listing_data_source">
+        <dataProvider 
+        class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider"
+        name="export_listing_data_source">
             <settings>
                 <requestFieldName>id</requestFieldName>
                 <primaryFieldName>wishlist_item_id</primaryFieldName>
@@ -97,7 +100,11 @@
             <label translate="true">Product Sku</label>
             </settings>
         </column>
-           <actionsColumn name="actions" sortOrder="70" class="Bluethinkinc\ImportWishlist\Ui\Component\Listing\Column\WishlistActions">
+           <actionsColumn 
+           name="actions"
+            sortOrder="70"
+             class="Bluethinkinc\ImportWishlist\Ui\Component\Listing\Column\WishlistActions"
+             >
             <settings>
                 <indexField>wishlist_item_id</indexField>
             </settings>

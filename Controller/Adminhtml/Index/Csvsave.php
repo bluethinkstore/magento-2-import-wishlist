@@ -171,7 +171,6 @@ class Csvsave extends \Magento\Backend\App\Action
             $uploader->checkAllowedExtension("csv");
             $uploader->skipDbProcessing(true);
             $result = $uploader->save($this->getWorkingDir());
-
             $this->validateIfHasExtension($result);
         } catch (\Exception $e) {
             $this->messageManager->addError(__($e->getMessage()));
